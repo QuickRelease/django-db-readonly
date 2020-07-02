@@ -1,3 +1,8 @@
+Reason for Fork
+-----
+
+Needed a way to add exclusions to the write prevention.  Set the Cursor to check and execute wrappers.
+
 About
 -----
 
