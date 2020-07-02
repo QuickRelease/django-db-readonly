@@ -14,6 +14,7 @@ else:
     from django.db.backends import utils as util
 
 from readonly.exceptions import DatabaseWriteDenied
+from readonly.wrappers import override_readonly
 
 VERSION = (0, 6, 0)
 __version__ = VERSION
@@ -76,6 +77,7 @@ class ReadOnlyCursorWrapper(object):
             self.readonly
             and self._write_sql(sql)
             and self._write_to_readonly_db()
+            and not override_readonly in self.db.execute_wrappers
         )
         if write_attempted:
             raise DatabaseWriteDenied
@@ -83,7 +85,7 @@ class ReadOnlyCursorWrapper(object):
 
     def executemany(self, sql, param_list):
         # Check the SQL
-        if self.readonly and self._write_sql(sql):
+        if self.readonly and self._write_sql(sql) and not override_readonly in self.db.execute_wrappers:
             raise DatabaseWriteDenied
         return self.cursor.executemany(sql, param_list)
 
