@@ -9,3 +9,4 @@ pip-log.txt
 /docs/html
 /docs/doctrees
 .idea
+/venv
