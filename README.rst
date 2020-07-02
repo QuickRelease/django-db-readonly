@@ -1,7 +1,16 @@
 Reason for Fork
 -----
 
-Needed a way to add exclusions to the write prevention.  Set the Cursor to check and execute wrappers.
+Needed a way to add specific exclusions to the write prevention by checking for a wrapper.
+
+How to use:
+
+```
+from django.db import connection
+from readonly.wrappers import override_readonly
+with connection.execute_wrapper(override_readonly):
+    do_queries()
+```
 
 About
 -----
