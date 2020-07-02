@@ -1,16 +1,17 @@
 Reason for Fork
------
+---------------
 
 Needed a way to add specific exclusions to the write prevention by checking for a wrapper.
 
-How to use:
+How to use::
 
-```
-from django.db import connection
-from readonly.wrappers import override_readonly
-with connection.execute_wrapper(override_readonly):
-    do_queries()
-```
+    from django.db import connection
+    from readonly.wrappers import override_readonly
+    with connection.execute_wrapper(override_readonly):
+        do_queries()
+
+If using a Database Cache for local development you should also set your Cache backend to:
+``readonly.cache.ReadOnlyOverrideDatabaseCache``
 
 About
 -----
