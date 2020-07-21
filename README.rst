@@ -13,6 +13,38 @@ How to use::
 If using a Database Cache for local development you should also set your Cache backend to:
 ``readonly.cache.ReadOnlyOverrideDatabaseCache``
 
+To continue allowing sessions to be updated, on local development you change to using a local memory cache session backend::
+
+    SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
+    SESSION_CACHE_ALIAS = 'auth'
+
+    CACHES = {
+        ...
+        'auth': {
+            'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+            'LOCATION': 'auth',
+        },
+    }
+
+You may also need to update the signal which updates the last_login attribute by adding this (for example in your CustomUser models.py)::
+
+    from django.utils import timezone
+    from django.contrib.auth.signals import user_logged_in
+    from readonly.wrappers import override_readonly
+
+
+    def always_update_last_login(sender, user, **kwargs):
+        """
+        A signal receiver which updates the last_login date for
+        the user logging in even when readonly mode enabled.
+        """
+        with connection.execute_wrapper(override_readonly):
+            user.last_login = timezone.now()
+            user.save(update_fields=['last_login'])
+
+    user_logged_in.connect(always_update_last_login, dispatch_uid='update_last_login')
+
+
 About
 -----
 
