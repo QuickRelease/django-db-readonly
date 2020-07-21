@@ -26,6 +26,8 @@ To continue allowing sessions to be updated, on local development you change to 
         },
     }
 
+However this will be reset on every reload of the development server - not ideal.  Long term we should look at DB_READ_ONLY_DATABASES and creating a Database Router.  This whoel thing isn't an issue for production where we use the Cache Session Backend and the Cache is a Redis instance (i.e. not just saved to the DB).
+
 You may also need to update the signal which updates the last_login attribute by adding this (for example in your CustomUser models.py)::
 
     from django.utils import timezone
